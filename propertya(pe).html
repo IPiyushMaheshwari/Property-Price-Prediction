@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='property2(p2).css') }}">
+</head>
+<body>
+    <div class="results-container">
+        <h1>Land Price Prediction Results</h1>
+        
+        <div class="prediction-result">
+            <h2>{{ predicted_price }}</h2>
+        </div>
+
+        <div class="graph-container">
+            <h3>Price Growth Trend</h3>
+            <div>{{ graph_html|safe }}</div>
+        </div>
+
+        <a href="/" class="back-btn">Go Back</a>
+    </div>
+</body>
+</html>

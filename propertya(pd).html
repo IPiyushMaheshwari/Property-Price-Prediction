@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='property2(p2).css') }}">
+
+    <!-- Select2 CSS (for search functionality in dropdowns) -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="full">
+        <video autoplay loop muted plays-inline class="back-video">
+            <source src="static/White and Green Modern Real Estate  Property Listing Slideshow Video.mp4" type="video/mp4">
+        </video>
+        <div class="landinput">
+            <h1>Land Price Prediction</h1>
+            <form method="POST" action="/predict" class="input-form">
+                <br>
+                <label for="city3">Selected City</label>
+                <br>
+                <select name="city" id="city3" placeholder="enter city">
+                    <option value="BHOPAL">BHOPAL</option>
+                </select>
+                <br>
+                <br>
+                <label for="area">Select Location</label>
+                <br>
+                <select name="area" id="area" required onchange="updateLandmarks()">
+                    <option value="">Select Area</option>
+                    <option value="Nehru Nagar">Nehru Nagar</option>
+                    <option value="Huzur">Huzur</option>
+                    <option value="Sanjeev Nagar">Sanjeev Nagar</option>
+                    <option value="Jatkhedi">Jatkhedi</option>
+                    <option value="Khajuri Kalan">Khajuri Kalan</option>
+                    <option value="Rohit Nagar">Rohit Nagar</option>
+                    <option value="Ratibad">Ratibad</option>
+                    <option value="TT Nagar">Tt Nagar</option>
+                    <option value="Shahpura">Shahpura</option>
+                    <option value="Trilanga">Trilanga</option>
+                    <option value="Idgah Hills">Idgah Hills</option>
+                    <option value="Danish Nagar">Danish Nagar</option>
+                    <option value="Bhauri">Bhauri</option>
+                    <option value="Raisen Road">Raisen Road</option>
+                    <option value="Bairagarh">Bairagarh</option>
+                    <option value="Indrapuri">Indrapuri</option>
+                    <option value="Raksha Vihar">Raksha Vihar</option>
+                    <option value="Lambakheda">Lambakheda</option>
+                    <option value="Sonagiri">Sonagiri</option>
+                    <option value="Indus Towne">Indus Towne</option>
+                    <option value="Bagsewaniya">Bagsewaniya</option>
+                    <option value="Vidisha Road">Vidisha Road</option>
+                    <option value="Bhanpur">Bhanpur</option>
+                    <option value="Kotra Sultanabad">Kotra Sultanabad</option>
+                    <option value="Jawahar Chock">Jawahar Chowk</option>
+                    <option value="Bhojpur Road">Bhojpur Road</option>
+                    <option value="New Market">New Market</option>
+                    <option value="Bangrasia">Bangrasia</option>
+                    <option value="Narmadapuram">Narmadapuram</option>
+                    <option value="Kolar Road">Kolar Road</option>
+                    <option value="Katara Hills">Katara Hills</option>
+                    <option value="Gandhi Nagar">Gandhi Nagar</option>
+                    <option value="Ayodhya Bypass">Ayodhya Bypass</option>
+                    <option value="Bawadia Kalan">Bawadia Kalan</option>
+                    <option value="Awadhpuri">Awadhpuri</option>
+                    <option value="Arera Colony">Arera Colony</option>
+                    <option value="Neelbad">Neelbad</option>
+                    <option value="Salaiya">Salaiya</option>
+                    <option value="Kohefiza">Kohefiza</option>
+                    <option value="Karond">Karond</option>
+                    <option value="Bagmugaliya">Bagmugaliya</option>
+                    <option value="Ashoka Garden">Ashoka Garden</option>
+                    <option value="Mandideep">Mandideep</option>
+                    <option value="Lalghati">Lalghati</option>
+                    <option value="MP Nagar">MP Nagar</option>
+                    <option value="Patel Nagar">Patel Nagar</option>
+                </select>
+                <br>
+                <br>
+                <label for="landmark">Select Landmark</label>
+                <br>
+                <select name="landmark" id="landmark" required>
+                    <option value="">Select Landmark</option>
+                </select>
+                <br>
+                <br>
+                <label for="land_area">Enter Area of the Land (in sq. ft.)</label>
+                <br>
+                <input type="number" id="land_area" name="land_area" required>
+                <br>
+                <br>
+                <label for="year">Year</label>
+                <br>
+                <input type="number" id="year" name="year" min="2025" required>
+                <br>
+                <br>
+                <button type="submit" class="submit-btn">Predict</button>
+                <button type="button" class="clear-btn" onclick="clearSelections()">Clear</button>
+            </form>
+            <!-- Display Prediction and Graph if available -->
+        <!-- Display Prediction and Graph if available -->
+        {% if predicted_price %}
+        <div class="prediction-result">
+            <h2>{{ predicted_price }}</h2>
+            <div class="graph-container">
+                <h3>Price Growth Trend</h3>
+                <div>{{ graph_html|safe }}</div>
+            </div>
+        </div>
+        {% endif %}
+        </div>
+    </div>
+
+    <!-- JavaScript to handle dynamic dropdowns -->
+    <script>
+        const areaLandmarkMap = {
+            "Nehru Nagar": ["Madhuram Sweets", "Karunadham Mandir", "Kopal Higher Sec. School"],
+            "Sanjeev Nagar": ["Sanjeev Nagar Park"],
+            "Jatkhedi": ["Bhabha University","Ruchi Temlple"],
+            "Khajuri Kalan":["Kamla Nagar Bal Udyan","Khajuri Kalan Chauraha"],
+            "Rohit Nagar":["Orion International School","Sagar Public School"],
+            "Ratibad":["VNS Hospital and Research Centre","IES Public School","Rajoria Hotel"],
+            "TT Nagar": ["Model Higher Secondary School", "Ganesham Fast Food", "Galaxy Zam Zam"],
+            "Shahpura": ["Timbuktoo","Manisha Market Bus Stop"],
+            "Trilanga": ["Trilanga Bus Stop","Vardhaman Mall"],
+            "Idgah Hills": ["Alark Square","Sunshine Hospital"],
+            "Danish Nagar": ["Sankalp Public School","Prayas Hospital"],
+            "Bhauri": ["Dr. Shankar Dayal Sharma Ayurved College & Hospital","Panama Canteen"],
+            "Raisen Road": ["Akanksha Marriage Garden"],
+            "Bairagarh": ["Aanand T. Shahni School","Sewa Sadan Eye Hospital Trust",
+                            "Raja Bhoj International Airport, Bhopa",
+                            "Chanchal Sweet House",
+                            "Bairagarh Shopping Complex"],
+            "Indrapuri": ["A&P International School","Madhavbaug Cardiac, Diabetes",
+                            "Indian Accent",
+                            "Anand Super Bazar",
+                            "Allahabad Bank Bus Stop"],
+            "Lambakheda": ["Holy Cross Co-Ed Senior Secondary","Impulse Multicare Hospital",
+                            "JNCT Canteen",
+                            "City Life",
+                            "People's Mall Bus Stop"],
+            "Sonagiri": ["Pragatisheel Higher Secondary School","Balaji Fracture & General Hospital",
+                            "Shakti South Indian Food",
+                            "Satyam Complex",
+                            "Allahabad Bank Bus Stop"],
+            "Indus Towne": ["Mount Litera Zee School - Hoshangabad","Ram Saroj Multi Speciality Hospital",
+                            "11 Mile Tower Commercial Complex",
+                            "Kaushal Nagar Bus Stop"],
+            "Bagsewaniya": ["Government Naveen Higher Secondary","Shekwar's Clinic",
+                            "Dininghut",
+                            "Sarvoday Shopping Complex",
+                            "AIIMS Bus Stop"],
+            "Vidisha Road": ["Bhanpur Jain Temple","NS Convent High School",
+                            "Government Naveen High School Bhanpur",
+                            "Dhanvantari Ayurved Aushdhalaya"],
+            "Bhanpur": ["New Senior Secondary Higher School"],
+            "Kotra Sultanabad": ["Raj Sweet","Kamla Nehru Higher Secondary School",
+                            "May Flower Public School"],
+            "Jawahar Chowk": ["Sharma Bhojnalaya","Bethel Public Higher Secondary School",
+                            "LIG Ground"],
+            "Bhojpur Road": ["Kendriya Vidyalaya CRPF Bangrasia","SR Tulsi Multi-Speciality Hospital",
+                            "OP Tea Stall",
+                            "11 Mile Tower Commercial Complex"],
+            "New Market": ["Rang Mahal Tower","TT Nagar Square","DTDC Express","Union Bank of India"],
+            "Huzur":["Bada Talab"],
+            "Narmadapuram":["Jalalabad","Gwaltoli","Hotel GMP","Hotel Vallabh Vilas"
+                ,"Narmada River View Resort & Restaurant "],
+            "Kolar Road": ["Danish Kunj","Gehun Kheda","Lalita Nagar","Nayapura",
+                "Shivalaya Hospital","Sankhedi","Bairagarh Chichali","Mansarovar Dental College","JK Hospital",
+                "Kanha Kunj"],
+            "Katara Hills": ["The Ivy Global School","Mount Hospital Bhopal",
+                "BDA Complex"],
+            "Gandhi Nagar": ["Rajiv Gandhi Proud-Yogiki Vishwavidyalaya","Ayodhya Bypass Road",
+                "New Central Jail","Woods Inn Resort Airport Airport Hotel",
+                "FR Agnel Co-ED Senior - Secondary School","Rishi Villas Colony"],
+            "Ayodhya Bypass": ["Sharda Nagar","Sagar Institute Of Research & Technology",
+                "ISRO"],
+            "Bawadia Kalan": ["Tikal Nagar","Pallavi Nagar"],
+            "Awadhpuri": ["Shymapalli Colony","Soumya Vihar-2","Crystal Ideal City"],
+            "Arera Colony": ["Mira Nagar","Lala Lajpat Rai Society"],
+            "Neelbad": ["MP.PG House Behind Maran Complex","Hotel Sanskar Palace",
+                "Vishwakarma Colony"],
+            "Salaiya": ["Flamingo Colony"],
+            "Kohefiza": ["BDA Colony","Shahid Nagar Colony"],
+            "Karond": ["Vivekanand Nagar","Hanif Colony","Nawab Colony","Saeed Colony",
+                "Kamal Nagar"],
+            "Bagmugaliya": ["Swarna Kunj Colony","Nai Basti","Meenakshi Planet City",
+                "Bhel Sangam Colony"],
+            "Ashoka Garden": [],
+            "Mandideep": ["Gurmehar Colony","Vidya Nagar"],
+            "Lalghati": ["Panchwati Colony"],
+            "MP Nagar": ["GRP Colony"],
+            "Patel Nagar": []
+        };
+
+        function updateLandmarks() {
+            const areaSelect = document.getElementById('area');
+            const landmarkSelect = document.getElementById('landmark');
+            const selectedArea = areaSelect.value;
+
+            landmarkSelect.innerHTML = '<option value="">Select Landmark</option>';
+
+            if (selectedArea && areaLandmarkMap[selectedArea]) {
+                areaLandmarkMap[selectedArea].forEach(landmark => {
+                    const option = document.createElement('option');
+                    option.value = landmark;
+                    option.textContent = landmark;
+                    landmarkSelect.appendChild(option);
+                });
+            }
+        }
+
+        function clearSelections() {
+            // Reset the area and landmark dropdowns
+            $('#area').val('').trigger('change');
+            $('#landmark').val('').trigger('change');
+            
+            // Optionally reset year and other inputs
+            $('#year').val('');
+            
+            // Hide prediction result and graph
+            $('.prediction-result').hide();
+            $('.prediction-result'*'#area').hide();
+        }
+
+    </script>
+
+    <!-- jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <!-- Initialize Select2 -->
+    <script>
+        $(document).ready(function() {
+            $('#area, #landmark').select2();
+        });
+    </script>
+
+</body>
+</html>

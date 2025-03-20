@@ -1,0 +1,65 @@
+/*.main{
+    height:100vh;
+    width:100vw;
+    }*/
+    
+    .full{
+        height:100vh;
+        width:100vw;
+    }
+    
+    .back-video{
+        position: absolute;
+        right:0;
+        z-index:-1;
+        }
+        
+        @media(min-aspect-ratio:16/9){
+            .back-video{
+                width:100%;
+                height:auto;
+            }
+        }
+        
+        @media(max-aspect-ratio:16/9){
+            .back-video{
+                width:auto;
+                height:100%;
+            }
+        }
+        
+    .inputbox{
+        background-color: white;
+        height:70%;
+        width:20%;
+        position: relative;
+        top:20%;
+        left:40%;
+        border-radius: 10px;
+        text-align: center;
+        font-family :'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+    
+    .landinput{
+        background-color: white;
+        height:70%;
+        width:25%;
+        position: relative;
+        top:30%;
+        left:40%;
+        border-radius: 10px;
+        text-align: center;
+        font-family :'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    select,input{
+        width:70%;
+        height:35px;
+        border-radius: 10px;
+    }
+    
+    button{
+        width:40%;
+        height:35px;
+        border-radius: 10px;
+    }
